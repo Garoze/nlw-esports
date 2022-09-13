@@ -1,6 +1,6 @@
 # NLW eSports
 
-![web](https://imgur.com/UgdrjSX)
+![web](https://i.imgur.com/UgdrjSX.png)
 
 Aplicação desenvolvida durante a semana da NLW da [Rocketseat](https://www.rocketseat.com.br/)
 
