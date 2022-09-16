@@ -8,6 +8,7 @@ import { View, TouchableOpacity, Image, FlatList, Text } from 'react-native';
 import { GameParams } from '../../@types/navigation';
 
 import { Heading } from '../../components/Heading';
+import { DuoMatch } from '../../components/DuoMatch';
 import { DuoCard, DuoCardProps } from '../../components/DuoCard';
 import { Background } from '../../components/Background';
 
@@ -21,12 +22,13 @@ export function Game() {
   const route = useRoute();
 
   const [duosList, setDuosList] = useState<DuoCardProps[]>([]);
+  const [discordDuoSelected, setDiscordDuoSelected] = useState('.Dev#1793');
 
   const game = route.params as GameParams;
   const navigation = useNavigation();
 
   useEffect(() => {
-    fetch(`http://192.168.1.102:3000/games/${game.id}/ads`)
+    fetch(`http://192.168.1.103:3000/games/${game.id}/ads`)
       .then((respose) => respose.json())
       .then((data) => setDuosList(data));
   }, []);
@@ -35,8 +37,10 @@ export function Game() {
     navigation.goBack();
   }
 
-  function handleConnect() {
-    console.log('Conectou!');
+  async function getDiscordUser(adsId: string) {
+    fetch(`http://192.168.1.103:3000/ads/${adsId}/discord`)
+      .then((respose) => respose.json())
+      .then((data) => setDiscordDuoSelected(data.discord));
   }
 
   return (
@@ -76,7 +80,7 @@ export function Game() {
           renderItem={({ item }) => (
             <DuoCard 
               data={item}
-              onConnect={() => handleConnect}
+              onConnect={() => getDiscordUser(item.id)}
             />
           )}
           horizontal
@@ -88,6 +92,12 @@ export function Game() {
               Não há anúncios publicados ainda.
             </Text>
           )}
+        />
+
+        <DuoMatch 
+          visible={discordDuoSelected.length > 0}
+          discord={discordDuoSelected}
+          onClose={() => setDiscordDuoSelected('')}
         />
       </SafeAreaView>
     </Background>
